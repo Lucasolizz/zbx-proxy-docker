@@ -1,0 +1,43 @@
+version: '3.8'
+
+volumes:
+  mysql-data:
+
+services:
+  mysql:
+    container_name: zbx-proxy-db
+    image: mysql:8.0.42
+    ports: 
+      - '3306:3306'
+    environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  zabbix-proxy:
+    container_name: zabbix-proxy
+    image: zabbix/zabbix-proxy-mysql:6.0.33-ubuntu
+    ports:
+      - '10051:10051'
+    environment:
+      - ZBX_PROXYMODE=0
+      - DB_SERVER_PORT=3306
+      - ZBX_SERVER_HOST=${ZBX_SERVER_HOST}
+      - ZBX_HOSTNAME=${ZBX_HOSTNAME}
+      - DB_SERVER_HOST=${DB_SERVER_HOST}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    depends_on:
+      - mysql	
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
