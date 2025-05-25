@@ -36,7 +36,6 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-    command: bash -c "apt update && apt install -y nano && bash"
     depends_on:
       - mysql	
     stdin_open: true
